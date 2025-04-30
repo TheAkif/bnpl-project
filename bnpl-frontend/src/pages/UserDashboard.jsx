@@ -13,7 +13,6 @@ export default function UserDashboard() {
   const [error, setError] = useState("");
   const [selectedDate, setDate] = useState(null);
 
-  // Fetch once
   useEffect(() => {
     async function load() {
       try {
@@ -28,7 +27,6 @@ export default function UserDashboard() {
     load();
   }, []);
 
-  // Flatten all installments with planNumber
   const allInstallments = useMemo(
     () =>
       plans.flatMap((plan, idx) =>
@@ -40,7 +38,6 @@ export default function UserDashboard() {
     [plans]
   );
 
-  // Filter for the selected date
   const displayedInstallments = selectedDate
     ? allInstallments.filter(
         (inst) =>
@@ -48,7 +45,6 @@ export default function UserDashboard() {
       )
     : allInstallments;
 
-  // Payment handler
   const handlePay = async (id) => {
     try {
       const updated = await payInstallment(id);
@@ -90,7 +86,6 @@ export default function UserDashboard() {
     <div className="user-page">
       <Navbar title="User Dashboard" />
       <div className="user-content dashboard-main">
-        {/* LEFT: Calendar + filtered installments */}
         <div className="dashboard-left">
           <div className="calendar-container">
             <InstallmentCalendar
@@ -119,7 +114,6 @@ export default function UserDashboard() {
             )}
           </div>
         </div>
-        {/* RIGHT: Detailed Plans Accordion */}
         <div className="dashboard-right">
           <h3>All Your Plans</h3>
           {loading ? (

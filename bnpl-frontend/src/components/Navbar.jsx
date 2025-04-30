@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
@@ -7,11 +6,9 @@ export default function Navbar({ title }) {
   const nav = useNavigate();
   const user = JSON.parse(localStorage.getItem("bnpl_user") || "{}");
 
-  // dropdown state
   const [open, setOpen] = useState(false);
   const userRef = useRef();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (userRef.current && !userRef.current.contains(e.target)) {

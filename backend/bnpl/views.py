@@ -16,13 +16,11 @@ from .serializers import (InstallmentSerializer, PaymentPlanSerializer,
 def merchant_analytics(request):
     merchant = request.user
 
-    # all plans for this merchant
     plans_qs = PaymentPlan.objects.filter(merchant=merchant)
     inst_qs = Installment.objects.filter(plan__in=plans_qs)
 
     total_plans = plans_qs.count()
 
-    # 1) total revenue = sum of all paid installments
     total_revenue = (
         inst_qs.filter(status=Installment.STATUS_PAID).aggregate(total=Sum("amount"))[
             "total"
@@ -30,12 +28,10 @@ def merchant_analytics(request):
         or 0
     )
 
-    # 2) overdue plans = count of distinct plans with any late installment
     overdue_plans = (
         plans_qs.filter(installments__status=Installment.STATUS_LATE).distinct().count()
     )
 
-    # 3) success rate = paid installments / total installments * 100
     totals = inst_qs.aggregate(
         total=Count("id"), paid=Count("id", filter=Q(status=Installment.STATUS_PAID))
     )

@@ -49,12 +49,8 @@
   background-color: #C53030;
 }
 
-
-
-
-
 .navbar-user {
-  position: relative;     /* for positioning the dropdown */
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -66,13 +62,12 @@
   border-radius: 50%;
   object-fit: cover;
   background-color: #dddddd;
-  cursor: pointer;        /* indicate it’s clickable */
+  cursor: pointer;
 }
 
-/* Dropdown menu */
 .navbar-dropdown {
   position: absolute;
-  top: 100%;              /* immediately below the avatar */
+  top: 100%;
   right: 0;
   margin-top: 8px;
   background: #ffffff;
@@ -84,7 +79,6 @@
   min-width: 120px;
 }
 
-/* Individual items */
 .navbar-dropdown .dropdown-item {
   padding: 10px 16px;
   font-size: 0.9rem;

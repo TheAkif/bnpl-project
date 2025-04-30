@@ -1,4 +1,3 @@
-# # bnpl/tests/test_signals_and_tasks.py
 # import pytest
 # from rest_framework.test import APIClient
 # from bnpl.tests.factories import MerchantFactory, UserFactory
@@ -30,7 +29,6 @@
 
 # @pytest.mark.django_db
 # def test_signals_mark_plan_completed(api_client, merchant_token, customer_token):
-#     # Create a 2-installment plan via API
 #     m_token, merchant = merchant_token
 #     c_token, customer = customer_token
 #     api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {m_token}')
@@ -43,13 +41,11 @@
 #     plan = create.json()
 #     inst_ids = [i['id'] for i in plan['installments']]
 
-#     # Pay both installments
 #     api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {c_token}')
 #     for inst_id in inst_ids:
 #         resp = api_client.post(f'/api/installments/{inst_id}/pay/')
 #         assert resp.status_code == 200
 
-#     # Fetch plan and confirm status
 #     api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {m_token}')
 #     resp = api_client.get(f'/api/plans/{plan["id"]}/')
 #     assert resp.status_code == 200
@@ -58,7 +54,6 @@
 # @pytest.mark.django_db
 # def test_mark_overdue_installments_task(db):
 #     from bnpl.models import Installment
-#     # Create one past-due installment
 #     inst = Installment.objects.create(
 #         plan=None,  # plan not needed for this test
 #         sequence=1,
@@ -74,7 +69,6 @@
 # @pytest.mark.django_db
 # def test_send_due_reminders_task(capsys, db):
 #     from bnpl.models import Installment
-#     # Create one installment due in 3 days, one due in 5 days
 #     due_in_3 = Installment.objects.create(
 #         plan=None,
 #         sequence=1,
@@ -89,7 +83,6 @@
 #         due_date=timezone.now().date() + timedelta(days=5),
 #         status=Installment.STATUS_PENDING
 #     )
-#     # Capture printed reminders
 #     send_due_reminders()
 #     captured = capsys.readouterr().out
 #     assert f"Reminder: installment {due_in_3.id}" in captured

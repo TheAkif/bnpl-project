@@ -7,7 +7,6 @@ def create_periodic_tasks(apps, schema_editor):
     CrontabSchedule = apps.get_model("django_celery_beat", "CrontabSchedule")
     PeriodicTask = apps.get_model("django_celery_beat", "PeriodicTask")
 
-    # 1) every day at midnight → mark overdue
     midnight, _ = CrontabSchedule.objects.get_or_create(
         minute="0", hour="0", day_of_week="*", day_of_month="*", month_of_year="*"
     )
@@ -18,7 +17,6 @@ def create_periodic_tasks(apps, schema_editor):
         defaults={"enabled": True},
     )
 
-    # 2) every day at 08:00 → send reminders
     morning, _ = CrontabSchedule.objects.get_or_create(
         minute="0", hour="8", day_of_week="*", day_of_month="*", month_of_year="*"
     )

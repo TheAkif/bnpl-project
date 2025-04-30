@@ -9,7 +9,6 @@ User = get_user_model()
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    # if you added custom fields, list them here:
     list_display = ("username", "email", "role", "is_staff", "is_active")
     list_filter = ("role", "is_staff", "is_superuser", "is_active")
     fieldsets = (

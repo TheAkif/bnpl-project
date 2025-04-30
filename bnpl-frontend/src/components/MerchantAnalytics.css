@@ -1,10 +1,8 @@
-/* Analytics grid */
 .analytics-grid {
   display: flex;
   gap: 16px;
 }
 
-/* Individual stat card */
 .stat-card {
   background: #ffffff;
   flex: 1;

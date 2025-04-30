@@ -27,7 +27,6 @@ export default function PlanAccordion({ plans, onPay }) {
               onClick={() => toggle(plan.id)}
               style={{ cursor: "pointer" }}
             >
-              {/* Top row: title, meta & badge */}
               <div className="plan-header">
                 <div>
                   <h4 className="plan-title">

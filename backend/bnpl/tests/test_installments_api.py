@@ -1,4 +1,3 @@
-# bnpl/tests/test_installments_api.py
 from datetime import date
 
 import pytest
@@ -34,7 +33,6 @@ def customer_token(api_client, db):
 def test_customer_can_pay_installment_and_status_updates(
     api_client, merchant_token, customer_token
 ):
-    # Merchant creates plan
     m_token, merchant = merchant_token
     c_token, customer = customer_token
     api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {m_token}")
@@ -52,7 +50,6 @@ def test_customer_can_pay_installment_and_status_updates(
     inst = plan["installments"][0]
     inst_id = inst["id"]
 
-    # Customer pays first installment
     api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {c_token}")
     pay_resp = api_client.post(f"/api/installments/{inst_id}/pay/")
     assert pay_resp.status_code == 200
@@ -60,14 +57,12 @@ def test_customer_can_pay_installment_and_status_updates(
     assert paid["status"] == "paid"
     assert paid["paid_at"] is not None
 
-    # Attempt to pay again fails
     second = api_client.post(f"/api/installments/{inst_id}/pay/")
     assert second.status_code == 400
 
 
 @pytest.mark.django_db
 def test_cannot_pay_other_users_installment(api_client, merchant_token, customer_token):
-    # Set up one plan/customer
     m_token, merchant = merchant_token
     c_token, customer = customer_token
     api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {m_token}")
@@ -84,7 +79,6 @@ def test_cannot_pay_other_users_installment(api_client, merchant_token, customer
     plan = create.json()
     inst_id = plan["installments"][0]["id"]
 
-    # Another unrelated user
     other = UserFactory()
     resp = api_client.post(
         "/api/token/", {"username": other.username, "password": "defaultpass"}

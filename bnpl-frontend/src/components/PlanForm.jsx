@@ -9,51 +9,6 @@ export default function PlanForm({ onSuccess, onError }) {
   const [startDate, setStartDate] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setSubmitting(true);
-  //   try {
-  //     const plan = await createPlan({
-  //       customer_email: customerEmail, // <-- use email now
-  //       total_amount: totalAmount,
-  //       num_installments: numInstallments,
-  //       start_date: startDate,
-  //     });
-  //     onSuccess(plan);
-  //     // reset form
-  //     setCustomerEmail("");
-  //     setTotalAmount("");
-  //     setNumInstallments(1);
-  //     setStartDate("");
-  //   } catch (err) {
-  //     onError?.(err);
-  //     let msg =
-  //       err.response?.data?.detail ||
-  //       (Array.isArray(err.response?.data?.non_field_errors) &&
-  //         err.response.data.non_field_errors[0]) ||
-  //       "";
-
-  //     if (!msg && err.response?.request?.response) {
-  //       try {
-  //         console.log(err)
-  //         const payload = JSON.parse(err.response.request.response);
-  //         msg =
-  //           payload.detail ||
-  //           (Array.isArray(payload.non_field_errors) &&
-  //             payload.non_field_errors[0]) ||
-  //           "";
-  //       } catch {
-  //         msg = "Plan creation failed.";
-  //         toast.error(msg);
-  //       }
-  //     }
-  //     if (!msg) msg = "Plan creation failed.";
-  //     toast.error(msg);
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -69,19 +24,16 @@ export default function PlanForm({ onSuccess, onError }) {
       onSuccess(plan);
       toast.success("Plan created successfully");
 
-      // reset form
       setCustomerEmail("");
       setTotalAmount("");
       setNumInstallments(1);
       setStartDate("");
     } catch (err) {
-      // optional upstream callback
       onError?.(err);
 
       let msg = "";
       const data = err.response?.data;
 
-      // 1️⃣ Check field‐specific errors
       if (data) {
         if (data.customer_email) {
           msg = Array.isArray(data.customer_email)
@@ -106,7 +58,6 @@ export default function PlanForm({ onSuccess, onError }) {
         }
       }
 
-      // 2️⃣ Fallback: raw JSON string (if any)
       if (!msg && err.response?.request?.response) {
         try {
           const payload = JSON.parse(err.response.request.response);
@@ -132,11 +83,9 @@ export default function PlanForm({ onSuccess, onError }) {
             msg = payload.non_field_errors[0];
           }
         } catch {
-          // ignore JSON parse errors
         }
       }
 
-      // 3️⃣ Final fallback
       if (!msg) {
         msg = "Plan creation failed.";
       }

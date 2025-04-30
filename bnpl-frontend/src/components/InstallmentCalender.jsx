@@ -8,7 +8,6 @@ export default function InstallmentCalendar({
   selectedDate,
   onDateChange,
 }) {
-  // Show a dot on days that have >=1 installment due
   const tileContent = ({ date, view }) => {
     if (view === "month") {
       const hasInst = installments.some(
