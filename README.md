@@ -11,8 +11,11 @@ A two‐part full-stack demo for “Buy Now, Pay Later” plans:
 ## Repository Layout
 
 bnpl_project/ 
+
 ├─ backend/ # Django + DRF + Celery + PostgreSQL 
+
 ├─ bnpl-frontend/ # React + Vite + Chart.js + React Calendar 
+
 └─ README.md
 
 
