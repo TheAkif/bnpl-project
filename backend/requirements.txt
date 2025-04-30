@@ -1,0 +1,14 @@
+Django==4.2
+djangorestframework 
+djangorestframework-simplejwt
+celery 
+django-celery-beat 
+django-celery-results
+pytest 
+pytest-django 
+factory_boy
+psycopg2-binary
+black
+isort
+django-environ
+django-cors-headers

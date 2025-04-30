@@ -1,0 +1,98 @@
+.navbar {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 64px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333333;
+  margin: 0;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #dddddd;
+}
+
+.navbar-username {
+  font-size: 1rem;
+  color: #555555;
+  white-space: nowrap;
+}
+
+.navbar-button {
+  padding: 8px 12px;
+  background-color: #E53E3E;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.navbar-button:hover {
+  background-color: #C53030;
+}
+
+
+
+
+
+.navbar-user {
+  position: relative;     /* for positioning the dropdown */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #dddddd;
+  cursor: pointer;        /* indicate it’s clickable */
+}
+
+/* Dropdown menu */
+.navbar-dropdown {
+  position: absolute;
+  top: 100%;              /* immediately below the avatar */
+  right: 0;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 10;
+  min-width: 120px;
+}
+
+/* Individual items */
+.navbar-dropdown .dropdown-item {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  color: #333333;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.navbar-dropdown .dropdown-item:hover {
+  background-color: #f5f5f5;
+}
