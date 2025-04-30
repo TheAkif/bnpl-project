@@ -48,6 +48,8 @@
 
 - **Logging**
   I couldn't add application level logging due to time constraints.
+- **Commenting & Docstrings**
+  I would have added more comments in my code and docstrings in my functions.
 - **Dockerization**  
   I would add a Dockerfile and Docker Compose (or Kubernetes manifests) to spin up all services (backend, Celery, database, frontend) with a single command across dev/staging/prod.  
 - **RBAC vs. ABAC**  
