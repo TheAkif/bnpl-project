@@ -1,90 +1,139 @@
 # BNPL Payment Plan Simulator
 
-A two‐part full-stack demo for “Buy Now, Pay Later” plans:
-
-- **Merchants** can split a purchase into installments.  
-- **Customers** can view and pay installments on a calendar/table UI.  
-- Includes automated overdue marking, mock email reminders, and analytics.
+A full-stack Buy Now, Pay Later demo where merchants create installment plans and customers pay them off on a structured schedule.
 
 ---
 
-## Repository Layout
+## Project Structure
 
-bnpl_project/ 
-
-├─ backend/ # Django + DRF + Celery + PostgreSQL 
-
-├─ bnpl-frontend/ # React + Vite + Chart.js + React Calendar 
-
-└─ README.md
-
+```text
+bnpl-project/
+├── backend/          # Django · DRF · Celery · PostgreSQL
+├── bnpl-frontend/    # React · Vite · Tailwind CSS
+└── README.md
+```
 
 ---
 
-## Backend
+## Tech Stack
 
-- **Frameworks**: Python 3.12, Django 4.2, Django REST Framework  
-- **Auth**: JWT via SimpleJWT  
-- **Database**: PostgreSQL (configured via django-environ)  
-- **Tasks**: Celery + django-celery-beat for:
-  - Marking installments late when overdue  
-  - Sending "due in 3 days" reminders  
-- **Signals**: Update plan status when all installments are paid  
-- **Endpoints**:
-  - `POST /api/signup`, `POST /api/token/`, `POST /api/login`
-  - `CRUD /api/plans/` (merchant only)  
-  - `POST /api/installments/{id}/pay/`  
-  - `GET /api/analytics/`  
+### Backend
 
-See **`backend/README.md`** for setup, migrations, env vars, Celery, etc.
+| Layer | Technology |
+| --- | --- |
+| Language | Python 3.12 |
+| Framework | Django 4.2 · Django REST Framework |
+| Auth | SimpleJWT (access + refresh tokens) |
+| Database | PostgreSQL |
+| Task Queue | Celery + django-celery-beat |
+| Config | django-environ (`.env` file) |
+
+### Frontend
+
+| Layer | Technology |
+| --- | --- |
+| Framework | React 19 · Vite 6 |
+| Styling | Tailwind CSS |
+| Routing | React Router DOM 7 |
+| HTTP | Axios (auto-injects JWT) |
+| Charts | Chart.js · react-chartjs-2 |
+| Calendar | react-calendar |
+| Notifications | react-toastify |
 
 ---
 
-## Frontend
+## Features
 
-- **Tooling**: React 18 + Vite (Used Vite for fast development)
-- **Routing**: React Router DOM  
-- **HTTP**: Axios with a shared API client (auto-injects JWT)  
-- **UI**:
-  - Custom CSS (no Tailwind)  
-  - Calendar view via `react-calendar`  
-  - Toasts via `react-toastify`  
-  - Charts via `react-chartjs-2`  
-- **Pages**:
-  - **Login/Signup** with role-based redirects.
-  - **Merchant Dashboard**: create plans, view cards, analytics tabs.
-  - **User Dashboard**: calendar + table, accordion per plan.
+- **Merchants** — create payment plans, split purchases into monthly installments, view analytics (revenue, overdue plans, success rate)
+- **Customers** — view plans on a calendar or table, pay installments in sequence
+- **Celery tasks** — automatically mark installments late when overdue, send due-date reminders 3 days ahead
+- **Signals** — auto-complete a plan when all its installments are paid
 
-See **`bnpl-frontend/README.md`** for install & run instructions.
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description | Access |
+| --- | --- | --- | --- |
+| `POST` | `/api/signup/` | Register a new user | Public |
+| `POST` | `/api/login/` | Login — returns JWT + user data | Public |
+| `POST` | `/api/token/refresh/` | Refresh access token | Public |
+| `GET/POST` | `/api/plans/` | List or create payment plans | Authenticated |
+| `GET/PUT/DELETE` | `/api/plans/{id}/` | Retrieve, update, or delete a plan | Authenticated |
+| `GET` | `/api/installments/` | List installments | Authenticated |
+| `POST` | `/api/installments/{id}/pay/` | Pay the next installment in sequence | Customer only |
+| `GET` | `/api/analytics/` | Merchant revenue and overdue stats | Merchant only |
 
 ---
 
 ## Getting Started
 
-1. **Clone** this repo  
+### Prerequisites
 
-2. **Backend**  
+- Python 3.12
+- Node.js 18+
+- PostgreSQL
+- Redis (Celery broker)
+
+### Backend
+
 ```bash
-   cd backend
-   pip install -r requirements.txt
-   touch .env # set DATABASE_URL, SECRET_KEY, CELERY_*
-   python manage.py migrate
-   python manage.py runserver
-   celery -A bnpl_project worker -l info
-   celery -A bnpl_project beat -l info
+cd backend
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create environment file and fill in your values
+cp .env.example .env
+
+# Run migrations
+python manage.py migrate
+
+# Seed Celery periodic tasks
+python manage.py seed_celery_tasks
+
+# Start the dev server
+python manage.py runserver
+
+# In separate terminals — start Celery worker and beat scheduler
+python -m celery -A bnpl_project worker -l info
+python -m celery -A bnpl_project beat -l info
 ```
 
-Note: Sometimes celery work do not start using this command, so, usually I use `python -m celery -A bnpl_project beat -l info` to run the workers.
+#### Required `.env` variables
 
-3. **Frontend**
+```env
+SECRET_KEY=your-django-secret-key
+DEBUG=True
+DATABASE_NAME=bnpl_db
+DATABASE_USER=postgres
+DATABASE_USER_PASSWORD=yourpassword
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+```
+
+### Frontend
 
 ```bash
-cd ../bnpl-frontend
+cd bnpl-frontend
+
 npm install
 npm run dev
 ```
 
-4. **Browse**
+### Access
 
- - Backend API at http://localhost:8000/api/
- - Frontend at http://localhost:5173/
+| Service | URL |
+| --- | --- |
+| Backend API | http://localhost:8000/api/ |
+| Django Admin | http://localhost:8000/admin/ |
+| Frontend | http://localhost:5173/ |
+
+---
+
+## User Roles
+
+| Role | Capabilities |
+| --- | --- |
+| **Merchant** | Create and manage payment plans, view analytics |
+| **Customer** | View assigned plans, pay installments in order |
