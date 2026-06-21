@@ -25,7 +25,6 @@ env = environ.Env(
 
 # Read .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-import pdb
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -143,7 +142,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

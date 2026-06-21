@@ -39,9 +39,18 @@ htmlcov/
 
 # Django stuff:
 *.log
+logs/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+staticfiles/
+media/
+
+# Celery runtime files
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat.pid
+*.pid
 
 # Environment variables
 .env
@@ -61,3 +70,11 @@ env/
 
 # macOS
 .DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Node / Frontend
+node_modules/
+bnpl-frontend/dist/
