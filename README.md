@@ -8,8 +8,8 @@ A full-stack Buy Now, Pay Later demo where merchants create installment plans an
 
 ```text
 bnpl-project/
-├── backend/          # Django · DRF · Celery · PostgreSQL
-├── bnpl-frontend/    # React · Vite · Tailwind CSS
+├── backend/
+├── bnpl-frontend/
 └── README.md
 ```
 
