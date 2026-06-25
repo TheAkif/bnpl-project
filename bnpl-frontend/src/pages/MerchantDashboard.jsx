@@ -7,11 +7,10 @@ import Navbar from "../components/Navbar";
 import "./MerchantDashboard.css";
 
 export default function MerchantDashboard() {
-  const [plans, setPlans]     = useState([]);
+  const [plans,   setPlans]   = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView]       = useState("plans"); // "plans" | "analytics"
+  const [view,    setView]    = useState("plans");
 
-  // Load plans
   useEffect(() => {
     async function load() {
       try {
@@ -32,41 +31,34 @@ export default function MerchantDashboard() {
   };
 
   const handlePlanError = err => {
-    const status = err.response?.status;
-    let msg = status >= 500
+    const d = err.response?.data || {};
+    const msg = err.response?.status >= 500
       ? "Failed to create plan."
-      : (() => {
-          const d = err.response?.data || {};
-          return (
-            d.customer_email ??
-            d.total_amount ??
-            d.num_installments ??
-            d.start_date ??
-            d.detail ??
-            (Array.isArray(d.non_field_errors) && d.non_field_errors[0]) ??
-            "Failed to create plan."
-          );
-        })();
+      : d.customer_email ?? d.total_amount ?? d.num_installments ??
+        d.start_date ?? d.detail ??
+        d.non_field_errors?.[0] ?? "Failed to create plan.";
     toast.error(msg);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div>
       <Navbar title="Merchant Dashboard" />
-
       <div className="merchant-page">
+
         <aside className="merchant-sidebar">
+          <p className="sidebar-heading">New Plan</p>
+          <p className="sidebar-subheading">Create an installment plan for a customer</p>
+          <div className="sidebar-divider" />
           <PlanForm onSuccess={handleNewPlan} onError={handlePlanError} />
         </aside>
 
         <main className="merchant-main">
-          {/* Tabs */}
           <div className="tabs">
             <button
               className={`tab ${view === "plans" ? "active" : ""}`}
               onClick={() => setView("plans")}
             >
-              Plans
+              Plans {!loading && `(${plans.length})`}
             </button>
             <button
               className={`tab ${view === "analytics" ? "active" : ""}`}
@@ -76,41 +68,52 @@ export default function MerchantDashboard() {
             </button>
           </div>
 
-          {/* Tab panels */}
           {view === "plans" ? (
             loading ? (
-              <p>Loading plans…</p>
+              <div className="state-message">Loading plans...</div>
             ) : plans.length === 0 ? (
-              <p>No plans yet.</p>
+              <div className="state-message">
+                <strong>No plans yet</strong>
+                Create your first installment plan using the form on the left.
+              </div>
             ) : (
-              plans.map((plan, idx) => {
-                const paidCount = plan.installments.filter(
-                  i => i.status === "paid"
-                ).length;
-                const pct = Math.round(
-                  (paidCount / plan.num_installments) * 100
-                );
-                const badgeClass = pct === 100 ? "completed" : "active";
+              <div className="plans-grid">
+                {plans.map((plan, idx) => {
+                  const paidCount = plan.installments.filter(i => i.status === "paid").length;
+                  const pct = Math.round((paidCount / plan.num_installments) * 100);
+                  const isCompleted = pct === 100;
 
-                return (
-                  <div key={plan.id} className="plan-card">
-                    <div className="plan-header">
-                      <div>
-                        <h4 className="plan-title">Plan {idx + 1}</h4>
-                        <p className="plan-meta">
-                          {plan.total_amount} SAR · {plan.num_installments} installments
-                        </p>
+                  return (
+                    <div key={plan.id} className="plan-card">
+                      <div className="plan-header">
+                        <div>
+                          <p className="plan-number">Plan {idx + 1}</p>
+                          <p className="plan-amount">
+                            {Number(plan.total_amount).toLocaleString()}
+                            <span className="plan-currency">SAR</span>
+                          </p>
+                        </div>
+                        <span className={`plan-badge ${isCompleted ? "completed" : "active"}`}>
+                          {isCompleted ? "Completed" : "Active"}
+                        </span>
                       </div>
-                      <span className={`plan-badge ${badgeClass}`}>
-                        {paidCount}/{plan.num_installments} paid
-                      </span>
+
+                      <p className="plan-installments">
+                        {plan.num_installments} monthly installments of{" "}
+                        {Number(plan.total_amount / plan.num_installments).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} SAR
+                      </p>
+
+                      <div className="plan-progress-row">
+                        <span className="plan-progress-label">{paidCount} of {plan.num_installments} paid</span>
+                        <span className="plan-progress-pct">{pct}%</span>
+                      </div>
+                      <div className="plan-progress">
+                        <div className="plan-progress-fill" style={{ width: `${pct}%` }} />
+                      </div>
                     </div>
-                    <div className="plan-progress">
-                      <div style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+              </div>
             )
           ) : (
             <MerchantAnalytics />
