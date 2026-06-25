@@ -1,71 +1,46 @@
 import { useState } from "react";
 import InstallmentTable from "./InstallmentTable";
 import "../pages/UserDashboard.css";
-import "../pages/MerchantDashboard.css";
+
+const fmtAmount = n => Number(n).toLocaleString("en-SA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function PlanAccordion({ plans, onPay }) {
   const [openPlan, setOpenPlan] = useState(null);
 
-  const toggle = (planId) => setOpenPlan(openPlan === planId ? null : planId);
-
-  const totalPlans = plans.length;
+  const toggle = planId => setOpenPlan(openPlan === planId ? null : planId);
 
   return (
-    <div>
+    <div className="accordion-list">
       {plans.map((plan, idx) => {
-        const paidCount = plan.installments.filter(
-          (i) => i.status === "paid"
-        ).length;
-        const badgeType =
-          paidCount === plan.num_installments ? "paid" : "pending";
+        const paidCount = plan.installments.filter(i => i.status === "paid").length;
+        const pct       = Math.round((paidCount / plan.num_installments) * 100);
+        const isOpen    = openPlan === plan.id;
+        const isCompleted = paidCount === plan.num_installments;
 
         return (
           <div key={plan.id} className="accordion-item">
-            {/* Header */}
-            <div
-              className="plan-card"
-              onClick={() => toggle(plan.id)}
-              style={{ cursor: "pointer" }}
-            >
-              <div className="plan-header">
-                <div>
-                  <h4 className="plan-title">
-                    Payment Plan {idx + 1} of {totalPlans}
-                  </h4>
-                  <p className="plan-meta">
-                    {plan.total_amount} SAR · {plan.num_installments}{" "}
-                    installments
-                  </p>
-                </div>
-                <span
-                  className={`plan-badge ${
-                    badgeType === "paid" ? "completed" : "active"
-                  }`}
-                >
+            <div className="accordion-header" onClick={() => toggle(plan.id)}>
+              <div className="accordion-header-left">
+                <p className="accordion-plan-label">Plan {idx + 1}</p>
+                <p className="accordion-plan-amount">{fmtAmount(plan.total_amount)} SAR</p>
+                <p className="accordion-plan-meta">{plan.num_installments} installments</p>
+              </div>
+              <div className="accordion-right">
+                <span className={`badge ${isCompleted ? "badge-paid" : "badge-pending"}`}>
                   {paidCount}/{plan.num_installments} paid
                 </span>
-              </div>
-
-              {/* Progress bar */}
-              <div className="plan-progress">
-                <div
-                  style={{
-                    width: `${Math.round(
-                      (paidCount / plan.num_installments) * 100
-                    )}%`,
-                  }}
-                />
+                <span className={`accordion-chevron ${isOpen ? "open" : ""}`}>&#9660;</span>
               </div>
             </div>
 
-            {/* Content */}
-            {openPlan === plan.id && (
+            <div className="accordion-progress">
+              <div className="accordion-progress-fill" style={{ width: `${pct}%` }} />
+            </div>
+
+            {isOpen && (
               <div className="accordion-content">
                 <InstallmentTable
-                  installments={plan.installments.map((inst) => ({
-                    ...inst,
-                    planId: idx + 1,
-                  }))}
+                  installments={plan.installments.map(inst => ({ ...inst, planId: idx + 1 }))}
                   onPay={onPay}
                 />
               </div>
