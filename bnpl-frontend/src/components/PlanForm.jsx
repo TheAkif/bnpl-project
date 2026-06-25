@@ -3,143 +3,100 @@ import { createPlan } from "../api/plans";
 import { toast } from "react-toastify";
 
 export default function PlanForm({ onSuccess, onError }) {
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [totalAmount, setTotalAmount] = useState("");
-  const [numInstallments, setNumInstallments] = useState(1);
-  const [startDate, setStartDate] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [customerEmail,    setCustomerEmail]    = useState("");
+  const [totalAmount,      setTotalAmount]      = useState("");
+  const [numInstallments,  setNumInstallments]  = useState(2);
+  const [startDate,        setStartDate]        = useState("");
+  const [submitting,       setSubmitting]       = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setSubmitting(true);
-
     try {
       const plan = await createPlan({
-        customer_email: customerEmail,
-        total_amount: totalAmount,
+        customer_email:   customerEmail,
+        total_amount:     totalAmount,
         num_installments: numInstallments,
-        start_date: startDate,
+        start_date:       startDate,
       });
-
       onSuccess(plan);
-      toast.success("Plan created successfully");
-
       setCustomerEmail("");
       setTotalAmount("");
-      setNumInstallments(1);
+      setNumInstallments(2);
       setStartDate("");
     } catch (err) {
       onError?.(err);
-
-      let msg = "";
-      const data = err.response?.data;
-
-      if (data) {
-        if (data.customer_email) {
-          msg = Array.isArray(data.customer_email)
-            ? data.customer_email[0]
-            : data.customer_email;
-        } else if (data.start_date) {
-          msg = Array.isArray(data.start_date)
-            ? data.start_date[0]
-            : data.start_date;
-        } else if (data.num_installments) {
-          msg = Array.isArray(data.num_installments)
-            ? data.num_installments[0]
-            : data.num_installments;
-        } else if (data.total_amount) {
-          msg = Array.isArray(data.total_amount)
-            ? data.total_amount[0]
-            : data.total_amount;
-        } else if (data.detail) {
-          msg = data.detail;
-        } else if (Array.isArray(data.non_field_errors)) {
-          msg = data.non_field_errors[0];
-        }
-      }
-
-      if (!msg && err.response?.request?.response) {
-        try {
-          const payload = JSON.parse(err.response.request.response);
-          if (payload.customer_email) {
-            msg = Array.isArray(payload.customer_email)
-              ? payload.customer_email[0]
-              : payload.customer_email;
-          } else if (payload.start_date) {
-            msg = Array.isArray(payload.start_date)
-              ? payload.start_date[0]
-              : payload.start_date;
-          } else if (payload.num_installments) {
-            msg = Array.isArray(payload.num_installments)
-              ? payload.num_installments[0]
-              : payload.num_installments;
-          } else if (payload.total_amount) {
-            msg = Array.isArray(payload.total_amount)
-              ? payload.total_amount[0]
-              : payload.total_amount;
-          } else if (payload.detail) {
-            msg = payload.detail;
-          } else if (Array.isArray(payload.non_field_errors)) {
-            msg = payload.non_field_errors[0];
-          }
-        } catch {
-        }
-      }
-
-      if (!msg) {
-        msg = "Plan creation failed.";
-      }
-
+      const d = err.response?.data || {};
+      const msg =
+        d.customer_email?.[0] ?? d.customer_email ??
+        d.total_amount?.[0]   ?? d.total_amount   ??
+        d.num_installments?.[0] ?? d.num_installments ??
+        d.start_date?.[0]     ?? d.start_date     ??
+        d.detail ??
+        d.non_field_errors?.[0] ??
+        "Plan creation failed.";
       toast.error(msg);
     } finally {
       setSubmitting(false);
     }
   };
 
-
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>
-      <h3>Create New Plan</h3>
+    <form className="sidebar-form" onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="customerEmail">Customer Email</label>
+        <input
+          id="customerEmail"
+          type="email"
+          value={customerEmail}
+          onChange={e => setCustomerEmail(e.target.value)}
+          placeholder="customer@example.com"
+          required
+        />
+      </div>
 
-      <label>Customer Email</label>
-      <br />
-      <input
-        type="email"
-        value={customerEmail}
-        onChange={(e) => setCustomerEmail(e.target.value)}
-        required
-      />
+      <div className="form-group">
+        <label htmlFor="totalAmount">Total Amount</label>
+        <input
+          id="totalAmount"
+          type="number"
+          step="0.01"
+          min="100.01"
+          max="9999.99"
+          value={totalAmount}
+          onChange={e => setTotalAmount(e.target.value)}
+          placeholder="e.g. 1200.00"
+          required
+        />
+        <p className="field-hint">Between SAR 100 and SAR 10,000</p>
+      </div>
 
-      <label style={{ marginTop: 10 }}>Total Amount (e.g. 1000.00)</label>
-      <br />
-      <input
-        type="text"
-        value={totalAmount}
-        onChange={(e) => setTotalAmount(e.target.value)}
-        required
-      />
+      <div className="form-group">
+        <label htmlFor="numInstallments">Installments</label>
+        <input
+          id="numInstallments"
+          type="number"
+          min={2}
+          value={numInstallments}
+          onChange={e => setNumInstallments(parseInt(e.target.value, 10))}
+          required
+        />
+        <p className="field-hint">Minimum 2 installments</p>
+      </div>
 
-      <label style={{ marginTop: 10 }}>Number of Installments</label>
-      <br />
-      <input
-        type="number"
-        value={numInstallments}
-        min={1}
-        onChange={(e) => setNumInstallments(parseInt(e.target.value, 10))}
-        required
-      />
+      <div className="form-group">
+        <label htmlFor="startDate">Start Date</label>
+        <input
+          id="startDate"
+          type="date"
+          value={startDate}
+          onChange={e => setStartDate(e.target.value)}
+          required
+        />
+      </div>
 
-      <label style={{ marginTop: 10 }}>Start Date</label>
-      <br />
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        required
-      />
-
-      <button type="submit" disabled={submitting} style={{ marginTop: 20 }}>
-        {submitting ? "Creating…" : "Create Plan"}
+      <button type="submit" className="submit-btn" disabled={submitting}>
+        {submitting ? "Creating..." : "Create Plan"}
       </button>
     </form>
   );
