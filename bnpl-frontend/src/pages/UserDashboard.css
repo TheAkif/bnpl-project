@@ -1,332 +1,416 @@
+/* Layout */
 .user-page {
-  background-color: #f5f7fa;
+  background: var(--color-bg);
   min-height: calc(100vh - 64px);
 }
 
 .user-content {
-  max-width: 70vw;
-  margin: 32px auto;
-  padding: 0 16px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.dashboard-left {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.dashboard-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Section headings */
+.section-heading {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+
+/* Calendar card wrapper */
+.calendar-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.calendar-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.calendar-filter-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.calendar-clear-btn {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+.calendar-clear-btn:hover {
+  text-decoration: underline;
+}
+
+/* react-calendar overrides */
+.react-calendar {
+  width: 100%;
+  border: none;
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+}
+
+.react-calendar__navigation {
+  background: var(--color-primary);
+  height: 48px;
+  margin-bottom: 0;
+}
+
+.react-calendar__navigation button {
+  background: none;
+  color: #fff;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  min-width: 44px;
+}
+
+.react-calendar__navigation button:hover,
+.react-calendar__navigation button:focus {
+  background: rgba(255,255,255,0.12);
+}
+
+.react-calendar__navigation__label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  padding: 10px 0 4px;
+}
+
+.react-calendar__month-view__weekdays abbr {
+  text-decoration: none;
+}
+
+.react-calendar__tile {
+  height: 48px;
+  background: none;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-sans);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 2px;
+}
+
+.react-calendar__tile:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.react-calendar__tile--now {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.react-calendar__tile--active,
+.react-calendar__tile--active:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.react-calendar__tile--active .calendar-dot {
+  background: rgba(255,255,255,0.8);
+}
+
+/* Status-aware calendar dots */
+.calendar-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.calendar-dot.dot-pending  { background: var(--color-primary); }
+.calendar-dot.dot-late     { background: var(--color-danger); }
+.calendar-dot.dot-paid     { background: var(--color-accent); }
+
+/* Table container */
+.table-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.table-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+}
+
+/* Installment table */
+.installment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.installment-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.installment-table td {
+  padding: 12px 16px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.installment-table tr:last-child td {
+  border-bottom: none;
+}
+
+.installment-table tr:hover td {
+  background: var(--color-bg);
+}
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-paid    { background: var(--color-success-bg); color: var(--color-success); }
+.badge-pending { background: var(--color-primary-light); color: var(--color-primary); }
+.badge-late    { background: var(--color-danger-bg); color: var(--color-danger); }
+
+/* Action buttons in table */
+.pay-btn {
+  padding: 5px 14px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pay-btn:hover { background: var(--color-primary-hover); }
+
+.paid-btn {
+  padding: 5px 14px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-sans);
+  cursor: default;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.page-button {
+  padding: 5px 14px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.page-button:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+
+.page-button:disabled {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.page-info {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Plan accordion */
+.accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .accordion-item {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom: 24px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.accordion-item:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .accordion-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: #e9ecef;
+  padding: 14px 16px;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.15s;
+  gap: 12px;
 }
 
 .accordion-header:hover {
-  background: #dde2e6;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: var(--color-bg);
 }
 
-.accordion-title {
-  margin: 0;
-  font-size: 1.125rem;
+.accordion-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.accordion-plan-label {
+  font-size: var(--font-size-xs);
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 2px;
 }
 
-.accordion-meta {
-  margin: 4px 0 0;
-  font-size: 0.875rem;
-  color: #7f8c8d;
+.accordion-plan-amount {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: capitalize;
+.accordion-plan-meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin: 2px 0 0;
 }
 
-.badge-paid {
-  background-color: #e6ffed;
-  color: #2d6a4f;
+.accordion-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.badge-pending {
-  background-color: #ebf8ff;
-  color: #2563eb;
+.accordion-chevron {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  transition: transform 0.2s;
 }
 
-.badge-late {
-  background-color: #fff5f5;
-  color: #b91c1c;
+.accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+.accordion-progress {
+  width: 100%;
+  height: 3px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.accordion-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  transition: width 0.3s ease;
 }
 
 .accordion-content {
-  background: #ffffff;
-  border-top: 1px solid #dde2e6;
-  padding: 16px 24px 24px;
+  border-top: 1px solid var(--color-border);
 }
 
-.installment-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-.installment-table th,
-.installment-table td {
-  padding: 12px;
-  text-align: left;
-}
-
-.installment-table th {
-  background: #f1f3f5;
-  font-weight: 600;
-  color: #34495e;
-  border-bottom: 2px solid #dde2e6;
-}
-
-.installment-table tr:not(:last-child) td {
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.pay-btn {
-  padding: 6px 14px;
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.pay-btn:hover {
-  background-color: #1e40af;
-}
-
-.paid-btn {
-  padding: 6px 14px;
-  background-color: #e2e8f0;
-  color: #475569;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.badge-paid {
-  background-color: #e2e8f0;
-  color: #718096;
-}
-
-.badge-pending {
-  background-color: #ebf8ff;
-  color: #3182ce;
-}
-
-.badge-late {
-  background-color: #fff5f5;
-  color: #e53e3e;
-}
-
-.react-calendar {
-  width: 100%;
-  background: #ffffff;
-  border: 1px solid #dde2e6;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  font-family: Arial, sans-serif;
-}
-
-.react-calendar__navigation {
-  background-color: #2563EB;
-  color: #ffffff;
-  height: 44px;
-  border-bottom: 1px solid #dde2e6;
-}
-
-.react-calendar__navigation button {
-  background: none;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  min-width: 44px;
-}
-
-.react-calendar__month-view__weekdays {
+/* Empty/loading states */
+.state-empty {
+  padding: 32px 20px;
   text-align: center;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: #4a5568;
-}
-
-.react-calendar__tile {
-  height: 44px;
-  background: none;
-  color: #2d3748;
-  font-weight: 500;
-  border-radius: 6px;
-}
-
-.react-calendar__tile--now {
-  background: #ebf8ff;
-}
-
-.react-calendar__tile--active {
-  background: #2563EB;
-  color: #ffffff;
-}
-
-.react-calendar__tile:hover {
-  background: #e2e8f0;
-}
-
-.calendar-dot {
-  margin-top: 4px;
-  height: 10px;
-  width: 10px;
-  background-color: #2563EB;
-  border-radius: 50%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.dashboard-main {
-  display: flex;
-  gap: 24px;
-}
-
-.dashboard-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.dashboard-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-
-/* Table */
-.installment-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-.installment-table th,
-.installment-table td {
-  padding: 12px;
-  text-align: left;
-}
-
-.installment-table th {
-  background: #f1f3f5;
-  font-weight: 600;
-  color: #34495e;
-  border-bottom: 2px solid #dde2e6;
-}
-
-.installment-table tr:not(:last-child) td {
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.badge-paid {
-  background-color: #e6ffed;
-  color: #2d6a4f;
-}
-
-.badge-pending {
-  background-color: #ebf8ff;
-  color: #2563eb;
-}
-
-.badge-late {
-  background-color: #fff5f5;
-  color: #b91c1c;
-}
-
-.pay-btn {
-  padding: 6px 14px;
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.pay-btn:hover {
-  background-color: #1e40af;
-}
-
-.paid-btn {
-  padding: 6px 14px;
-  background-color: #e2e8f0;
-  color: #475569;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.page-button {
-  padding: 6px 12px;
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.page-button[disabled] {
-  background-color: #cbd5e1;
-  cursor: default;
-}
-
-.page-info {
-  font-size: 0.875rem;
-  color: #4a5568;
-}
-
-.pagination button{
-  width: 5vw;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }

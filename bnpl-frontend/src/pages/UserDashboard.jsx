@@ -8,9 +8,8 @@ import PlanAccordion from "../components/PlanAccordion";
 import "./UserDashboard.css";
 
 export default function UserDashboard() {
-  const [plans, setPlans] = useState([]);
+  const [plans,   setPlans]   = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [selectedDate, setDate] = useState(null);
 
   useEffect(() => {
@@ -28,56 +27,33 @@ export default function UserDashboard() {
   }, []);
 
   const allInstallments = useMemo(
-    () =>
-      plans.flatMap((plan, idx) =>
-        plan.installments.map((inst) => ({
-          ...inst,
-          planNumber: idx + 1,
-        }))
-      ),
+    () => plans.flatMap((plan, idx) =>
+      plan.installments.map(inst => ({ ...inst, planNumber: idx + 1 }))
+    ),
     [plans]
   );
 
   const displayedInstallments = selectedDate
     ? allInstallments.filter(
-        (inst) =>
-          new Date(inst.due_date).toDateString() === selectedDate.toDateString()
+        inst => new Date(inst.due_date).toDateString() === selectedDate.toDateString()
       )
     : allInstallments;
 
-  const handlePay = async (id) => {
+  const handlePay = async id => {
     try {
       const updated = await payInstallment(id);
-      setPlans((pls) =>
-        pls.map((plan) => ({
+      setPlans(pls =>
+        pls.map(plan => ({
           ...plan,
-          installments: plan.installments.map((inst) =>
-            inst.id === updated.id ? updated : inst
-          ),
+          installments: plan.installments.map(inst => inst.id === updated.id ? updated : inst),
         }))
       );
       toast.success("Installment paid!");
     } catch (err) {
-      let msg =
+      const msg =
         err.response?.data?.detail ||
-        (Array.isArray(err.response?.data?.non_field_errors) &&
-          err.response.data.non_field_errors[0]) ||
-        "";
-
-      if (!msg && err.response?.request?.response) {
-        try {
-          const payload = JSON.parse(err.response.request.response);
-          msg =
-            payload.detail ||
-            (Array.isArray(payload.non_field_errors) &&
-              payload.non_field_errors[0]) ||
-            "";
-        } catch {
-          msg = "Payment failed."
-          toast.error(msg);    
-        }
-      }
-      if (!msg) msg = "Payment failed.";
+        err.response?.data?.non_field_errors?.[0] ||
+        "Payment failed.";
       toast.error(msg);
     }
   };
@@ -85,7 +61,8 @@ export default function UserDashboard() {
   return (
     <div className="user-page">
       <Navbar title="User Dashboard" />
-      <div className="user-content dashboard-main">
+      <div className="user-content">
+
         <div className="dashboard-left">
           <div className="calendar-container">
             <InstallmentCalendar
@@ -93,37 +70,49 @@ export default function UserDashboard() {
               selectedDate={selectedDate}
               onDateChange={setDate}
             />
+            {selectedDate && (
+              <div className="calendar-filter-bar">
+                <span className="calendar-filter-label">
+                  Showing installments for {selectedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                </span>
+                <button className="calendar-clear-btn" onClick={() => setDate(null)}>
+                  Clear filter
+                </button>
+              </div>
+            )}
           </div>
+
           <div className="table-container">
+            <div className="table-header">
+              <p className="table-title">Installments</p>
+              <span className="table-count">{displayedInstallments.length} total</span>
+            </div>
             {loading ? (
-              <p>Loading installments…</p>
+              <div className="state-empty">Loading...</div>
             ) : displayedInstallments.length === 0 ? (
-              <p>
-                {selectedDate
-                  ? "No installments on this date."
-                  : "Click any date to see installments."}
-              </p>
+              <div className="state-empty">
+                {selectedDate ? "No installments on this date." : "No installments found."}
+              </div>
             ) : (
               <InstallmentTable
-                installments={displayedInstallments.map((inst) => ({
-                  ...inst,
-                  planId: inst.planNumber,
-                }))}
+                installments={displayedInstallments.map(inst => ({ ...inst, planId: inst.planNumber }))}
                 onPay={handlePay}
               />
             )}
           </div>
         </div>
+
         <div className="dashboard-right">
-          <h3>All Your Plans</h3>
+          <p className="section-heading">Your Plans</p>
           {loading ? (
-            <p>Loading plans…</p>
+            <div className="state-empty">Loading...</div>
           ) : plans.length === 0 ? (
-            <p>No plans found.</p>
+            <div className="state-empty">No plans found.</div>
           ) : (
             <PlanAccordion plans={plans} onPay={handlePay} />
           )}
         </div>
+
       </div>
     </div>
   );
